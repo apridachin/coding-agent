@@ -1,0 +1,35 @@
+services:
+  coding-agent:
+    build:
+      context: ..
+      dockerfile: coding-agent/Dockerfile
+    working_dir: /workspace/coding-agent
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    command: >
+      bash -lc "uv run coding-agent --provider openai --stream --show-tools --approve-tools"
+    stdin_open: true
+    tty: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+  coding-agent-test:
+    build:
+      context: ..
+      dockerfile: coding-agent/Dockerfile
+    working_dir: /workspace/coding-agent
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    command: >
+      bash -lc "uv run pytest -q"
+    stdin_open: false
+    tty: false
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
